@@ -9,7 +9,7 @@ const IntervalSchema = {
     properties: {
         id: 'string',
         date: 'date',
-        interval: 'long',
+        interval: 'int',
     }
 }
 
@@ -31,7 +31,7 @@ const addTask = (name) => {
         .then(realm => {
             try{
                 realm.write(() => {
-                    const task = realm.create('Task', {uuid, name, intervals});
+                    const task = realm.create('Task', {id: uuid, name, intervals});
                     resolve(uuid) // or task
                 });
             } catch (e){

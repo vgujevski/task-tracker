@@ -1,30 +1,29 @@
 import React from 'react';
 import { Text, View } from 'react-native';
-import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
+import { createMaterialTopTabNavigator, createAppContainer } from 'react-navigation';
 
-class HomeScreen extends React.Component {
-  render() {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Home!</Text>
-      </View>
-    );
+import TaskListScreen from './src/TaskListScreen';
+import StatsScreen from './src/StatsScreen';
+
+const TabNavigator = createMaterialTopTabNavigator({
+  Tasks: TaskListScreen,
+  Statistics: StatsScreen,
+}, {
+  // labelStyle: {
+  //   fontSize: 12,
+  // },
+  // style: {
+  //   backgroundColor: '#607D8B',
+  // },
+  tabBarOptions: {
+    labelStyle: {
+      fontSize: 14,
+    },
+    style: {
+      //backgroundColor: '#607D8B',
+      backgroundColor: '#757575',
+    },
   }
-}
-
-class SettingsScreen extends React.Component {
-  render() {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Settings!</Text>
-      </View>
-    );
-  }
-}
-
-const TabNavigator = createBottomTabNavigator({
-  Home: HomeScreen,
-  Settings: SettingsScreen,
 });
 
 export default createAppContainer(TabNavigator);
