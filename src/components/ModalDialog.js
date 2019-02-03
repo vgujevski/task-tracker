@@ -3,6 +3,7 @@ import {
         Modal, View, Text, 
         Alert, StyleSheet, 
         Button, TextInput, TouchableHighlight } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons'
 
 import { addTask } from '../storage/database'
 
@@ -66,12 +67,12 @@ export default class ModalDialog extends Component{
                             <TouchableHighlight
                                 style={styles.button}
                                 onPress={this.dismissDialog}>
-                                <Text>Cancel</Text>
+                                <Icon name="clear" size={40} color="black" />
                             </TouchableHighlight>
                             <TouchableHighlight
                                 style={styles.button}
                                 onPress={this.addTask}>
-                                <Text>Add</Text>
+                                <Icon name="done" size={40} color="black" />
                             </TouchableHighlight>
                         </View>
                     </View>
@@ -107,6 +108,8 @@ const styles = StyleSheet.create({
     button: {
         width:'30%',
         margin: 4,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 
 

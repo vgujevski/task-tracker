@@ -8,7 +8,8 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-import io.realm.react.RealmReactPackage; 
+import io.realm.react.RealmReactPackage;
+import com.oblador.vectoricons.VectorIconsPackage; 
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,7 +27,8 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
           new RNGestureHandlerPackage(),
-          new RealmReactPackage()
+          new RealmReactPackage(),
+          new VectorIconsPackage()
       );
     }
 

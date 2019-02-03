@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text, View, FlatList, StyleSheet, TouchableHighlight } from 'react-native';
 import TaskListItem from './TaskListItem.js';
+import Icon from 'react-native-vector-icons/MaterialIcons'
 
 import { getTaskList } from '../storage/database';
 
@@ -77,7 +78,7 @@ class TaskListScreen extends React.Component {
           <TouchableHighlight
                 onPress={this.handleAddTaskClick} 
                 style={styles.buttonContainer}>
-              <Text>Add task</Text>
+              <Icon name="add-box" size={40} color="black" />
           </TouchableHighlight>
           <ModalDialog show={this.state.modalVisible} toggle={this.toggleModal}/>
         </View>
