@@ -1,6 +1,12 @@
 import React, {Component} from 'react';
 import { View, Text, StyleSheet, TouchableHighlight, Dimensions} from 'react-native';
 import moment from 'moment';
+const timer = require('react-native-timer')
+
+import { addTaskInterval } from '../storage/database'
+
+
+
 
 var width = Dimensions.get('window').width;
 
@@ -17,10 +23,20 @@ export default class TaskListItem extends Component{
     }
 
     getTotalTimeSpent = (intervals) => {
-        const sum = intervals.reduce(function(intervals, b) { return intervals + b; }, 0);
+        // console.log('getTotalTimeSpent called');
+        // console.log(`timerIsRunning:${this.state.timerIsRunning}, timerNow: ${this.state.timerNow}`);
+        
+        let intervalArray = []
+        for(let i=0;i<intervals.length;i++){
+            intervalArray.push(intervals[i].interval)
+        }
+        const sum = intervalArray.reduce(function(intervals, b) { return intervals + b; }, 0);
         const days = Math.floor(sum / (1000 * 60 * 60 * 24));
         const hours = Math.floor((sum - (1000 * 60 * 60 * 24 * days)) / (1000 * 60 * 60));
         const minutes = Math.floor((sum - (1000 * 60 * 60 * 24 * days) - (1000 * 60 * 60 * hours)) / (1000 * 60))
+        // console.log(`intervals array: ${intervalArray}`);
+        
+        // console.log(`sum: ${sum}`); 
         return `${days} day${days % 10 == 1 ? "" : "s"}, ${hours} hour${hours % 10 == 1 ? "" : "s"}, ${minutes} minute${minutes % 10 == 1 ? "" : "s"}`;
     }
 
@@ -29,37 +45,49 @@ export default class TaskListItem extends Component{
     }
 
     handleTimerButtonClick = () => {
-        alert('click')
         this.startTimer();
         this.setState({
             timerIsRunning: this.state.timerIsRunning ? false : true
         })
+        if(this.state.timerIsRunning){
+            this.stopTimer();
+        }
     }
 
-    componentWillMount(){
-        clearInterval(this.timer)
+    componentWillUnmount(){
+        console.log('componentWillUnmount called');
+        timer.clearInterval(this, 'timer')
     }
 
     startTimer = () => {
+        console.log('startTimer called')
+     
         const now = new Date().getTime()
         this.setState({
             timerStart: now,
             timerNow: now,
         })
-
-        this.timer = setInterval(() => {
+        timer.setInterval(this, 'timer', () => {
+            console.log('interval called');
+            
             this.setState({timerNow: new Date().getTime()})
         }, 1000)
     }
 
     stopTimer = () => {
-        // TODO push interval to db
-        clearInterval(this.timer)
-        this.setState({
-            timerIsRunning: false,
-            timerNow: 0,
-            timerStart: 0, 
-        })
+        console.log('stopTimer called')
+        addTaskInterval(this.props.data.id, 
+                        this.state.timerNow - this.state.timerStart).then(resolve => {
+                            console.log(resolve);
+                            timer.clearInterval(this, 'timer')
+                            this.setState({
+                                timerIsRunning: false,
+                                timerNow: 0,
+                                timerStart: 0, 
+                            })    
+                        }).catch(e => {
+                            console.log(e);                        
+                        })
     }
 
     timerButton = () => {

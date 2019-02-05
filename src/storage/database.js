@@ -133,7 +133,7 @@ const addTaskInterval = (id, interval) => {
             if(task[0]){
                 try{
                     realm.write(() => {
-                        task[0].intervals.push({uuid, date, interval})
+                        task[0].intervals.push({id: uuid, date, interval})
                         resolve(`interval added: ${interval}`)
                     })
                 }catch(e){

@@ -1,5 +1,3 @@
-import React from 'react';
-import { Text, View } from 'react-native';
 import { createMaterialTopTabNavigator, createAppContainer } from 'react-navigation';
 
 import TaskListScreen from './src/TaskListScreen';
