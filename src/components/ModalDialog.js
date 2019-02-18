@@ -39,7 +39,7 @@ export default class ModalDialog extends Component{
                 alert('error')     
             })
         }else{
-            alert('name too short')
+            alert('name too short') 
             // display error msg 'name is too short'
         }       
     }

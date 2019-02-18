@@ -1,28 +1,41 @@
-import { createMaterialTopTabNavigator, createAppContainer } from 'react-navigation';
+import { createMaterialTopTabNavigator, createAppContainer, createStackNavigator } from 'react-navigation';
 
-import TaskListScreen from './src/TaskListScreen';
-import StatsScreen from './src/StatsScreen';
+import TaskListScreen from './src/TaskListScreen'
+import StatsScreen from './src/StatsScreen'
+import TaskStats from './src/TaskStats'
 
 const TabNavigator = createMaterialTopTabNavigator({
   Tasks: TaskListScreen,
   Statistics: StatsScreen,
 }, {
-  // labelStyle: {
-  //   fontSize: 12,
-  // },
-  // style: {
-  //   backgroundColor: '#607D8B',
-  // },
+  navigationOptions: {
+    header: null
+  },
   tabBarOptions: {
     labelStyle: {
       fontSize: 14,
     },
     style: {
-      //backgroundColor: '#607D8B',
       backgroundColor: '#757575',
     },
-  }
+    showIcon: true,
+    showLabel: false,
+  },
 });
 
-export default createAppContainer(TabNavigator);
+const MainStack = createStackNavigator({
+  TaskStats: {
+    screen: TaskStats
+  },
+  Tab: {
+    screen: TabNavigator,
+  }
+}
+,{
+  initialRouteName: "Tab",
+});
+
+
+
+export default createAppContainer(MainStack);
 

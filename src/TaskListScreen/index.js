@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, FlatList, StyleSheet, TouchableHighlight } from 'react-native';
+import { Text, View, FlatList, StyleSheet, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
 import TaskListItem from './TaskListItem.js';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
@@ -27,6 +27,16 @@ const testData = [
 
 class TaskListScreen extends React.Component {
 
+    static navigationOptions = {
+        tabBarLabel: 'Statistics Label',
+        tabBarIcon: ({focused, tintColor }) => (
+          focused ? 
+          <Icon name="reorder" size={26} color="black" />
+          :
+          <Icon name="reorder" size={26} color="black" />
+        ),
+      }
+
     state = {
         data: [],
         modalVisible: false
@@ -34,10 +44,6 @@ class TaskListScreen extends React.Component {
 
     componentWillMount(){
        this.refreshData(); 
-    }
-
-    handleTaskListClick = (id) => {
-        alert('task clicked')
     }
 
     handleAddTaskClick = () => {
@@ -65,15 +71,29 @@ class TaskListScreen extends React.Component {
         })
     }
 
+    _renderItem = ({item}) => (
+            <TaskListItem   
+                data={item}
+                clickListener={this._onPressItem}
+            />     
+    )
+
+    _keyExtractor = (item, index) => item.id;
+
+    _onPressItem = (data) => {
+        this.props.navigation.navigate('TaskStats', {
+           taskTitle: data.name,
+           //data: data 
+        })
+    }
+
     render() {
       return (
-        <View style={styles.container}>
-            
+        <View style={styles.container}>          
           <FlatList
             data={this.state.data}
-            keyExtractor={(item, index) => item.id}
-            renderItem={({item}) => 
-            <TaskListItem onClick={this.handleTaskListClick}  data={item}/>}
+            keyExtractor={this._keyExtractor}
+            renderItem={this._renderItem}
           />
           <TouchableHighlight
                 onPress={this.handleAddTaskClick} 

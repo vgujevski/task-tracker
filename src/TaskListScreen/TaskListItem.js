@@ -1,43 +1,19 @@
 import React, {Component} from 'react';
-import { View, Text, StyleSheet, TouchableHighlight, Dimensions} from 'react-native';
+import { View, Text, StyleSheet, TouchableHighlight, Dimensions, TouchableWithoutFeedback} from 'react-native';
 import moment from 'moment';
 const timer = require('react-native-timer')
 
 import { addTaskInterval } from '../storage/database'
-
-
-
+import { getTimeSpentTotal } from '../utils/misc'
 
 var width = Dimensions.get('window').width;
 
 export default class TaskListItem extends Component{
 
-    constructor(props){
-        super(props);
-    }
-
     state = {
         timerIsRunning: false,
         timerNow: 0,
         timerStart: 0,
-    }
-
-    getTotalTimeSpent = (intervals) => {
-        // console.log('getTotalTimeSpent called');
-        // console.log(`timerIsRunning:${this.state.timerIsRunning}, timerNow: ${this.state.timerNow}`);
-        
-        let intervalArray = []
-        for(let i=0;i<intervals.length;i++){
-            intervalArray.push(intervals[i].interval)
-        }
-        const sum = intervalArray.reduce(function(intervals, b) { return intervals + b; }, 0);
-        const days = Math.floor(sum / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((sum - (1000 * 60 * 60 * 24 * days)) / (1000 * 60 * 60));
-        const minutes = Math.floor((sum - (1000 * 60 * 60 * 24 * days) - (1000 * 60 * 60 * hours)) / (1000 * 60))
-        // console.log(`intervals array: ${intervalArray}`);
-        
-        // console.log(`sum: ${sum}`); 
-        return `${days} day${days % 10 == 1 ? "" : "s"}, ${hours} hour${hours % 10 == 1 ? "" : "s"}, ${minutes} minute${minutes % 10 == 1 ? "" : "s"}`;
     }
 
     componentWillMount(){
@@ -90,16 +66,21 @@ export default class TaskListItem extends Component{
                         })
     }
 
+    _onLongPress = () => {
+        this.props.clickListener(this.props.data)
+    }
+
     timerButton = () => {
         if(!this.state.timerIsRunning){
             return(
+                // onPress={this.handleTimerButtonClick}
                 <TouchableHighlight onPress={this.handleTimerButtonClick} style={styles.button}>
                     <Text style={styles.buttonTitle}>Start</Text>
                 </TouchableHighlight>
             )
         }else{
             return(
-                <TouchableHighlight onPress={this.handleTimerButtonClick} style={styles.button}>
+                <TouchableHighlight onPress={this.handleTimerButtonClick}  style={styles.button}>
                     <Text style={styles.buttonTitle}>Stop</Text>
                 </TouchableHighlight>
             )         
@@ -123,20 +104,22 @@ export default class TaskListItem extends Component{
 
     timeSpentView = () => {
         return(
-            <Text style={styles.time}>{this.getTotalTimeSpent(this.props.data.intervals)}</Text>
+            <Text style={styles.time}>{getTimeSpentTotal(this.props.data.intervals)}</Text>
         )
     }
 
     render(){
         return(         
             <View style={styles.container}>
-                <View style={styles.containerRow}>
-                    <View style={styles.containerColumn}>
-                        <Text style={styles.name}>{this.props.data.name}</Text>
-                        {this.state.timerIsRunning ? this.timerView() : this.timeSpentView()}
-                    </View>
-                    {this.timerButton()}
-                </View>    
+                <TouchableWithoutFeedback onLongPress={this._onLongPress}>
+                    <View style={styles.containerRow}>
+                        <View style={styles.containerColumn}>
+                            <Text style={styles.name}>{this.props.data.name}</Text>
+                            {this.state.timerIsRunning ? this.timerView() : this.timeSpentView()}
+                        </View>
+                        {this.timerButton()}
+                    </View> 
+                </TouchableWithoutFeedback>
             </View>                
         )
     }
