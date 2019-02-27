@@ -80,10 +80,11 @@ class TaskListScreen extends React.Component {
 
     _keyExtractor = (item, index) => item.id;
 
-    _onPressItem = (data) => {
+    _onPressItem = (data, startTimer) => {
         this.props.navigation.navigate('TaskStats', {
            taskTitle: data.name,
-           //data: data 
+           data: data,
+           startTimer: startTimer, 
         })
     }
 

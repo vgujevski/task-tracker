@@ -5,6 +5,7 @@ const timer = require('react-native-timer')
 
 import { addTaskInterval } from '../storage/database'
 import { getTimeSpentTotal } from '../utils/misc'
+import { fonts } from '../utils/styles/font_styles'
 
 var width = Dimensions.get('window').width;
 
@@ -20,71 +21,21 @@ export default class TaskListItem extends Component{
         width = Dimensions.get('window').width;
     }
 
-    handleTimerButtonClick = () => {
-        this.startTimer();
-        this.setState({
-            timerIsRunning: this.state.timerIsRunning ? false : true
-        })
-        if(this.state.timerIsRunning){
-            this.stopTimer();
-        }
-    }
-
-    componentWillUnmount(){
-        console.log('componentWillUnmount called');
-        timer.clearInterval(this, 'timer')
-    }
-
-    startTimer = () => {
-        console.log('startTimer called')
-     
-        const now = new Date().getTime()
-        this.setState({
-            timerStart: now,
-            timerNow: now,
-        })
-        timer.setInterval(this, 'timer', () => {
-            console.log('interval called');
-            
-            this.setState({timerNow: new Date().getTime()})
-        }, 1000)
-    }
-
-    stopTimer = () => {
-        console.log('stopTimer called')
-        addTaskInterval(this.props.data.id, 
-                        this.state.timerNow - this.state.timerStart).then(resolve => {
-                            console.log(resolve);
-                            timer.clearInterval(this, 'timer')
-                            this.setState({
-                                timerIsRunning: false,
-                                timerNow: 0,
-                                timerStart: 0, 
-                            })    
-                        }).catch(e => {
-                            console.log(e);                        
-                        })
-    }
-
-    _onLongPress = () => {
+    _onPress = () => {
         this.props.clickListener(this.props.data)
     }
 
+    _onStartPress = () => {
+        this.props.clickListener(this.props.data, true)
+    }
+
     timerButton = () => {
-        if(!this.state.timerIsRunning){
-            return(
-                // onPress={this.handleTimerButtonClick}
-                <TouchableHighlight onPress={this.handleTimerButtonClick} style={styles.button}>
-                    <Text style={styles.buttonTitle}>Start</Text>
-                </TouchableHighlight>
-            )
-        }else{
-            return(
-                <TouchableHighlight onPress={this.handleTimerButtonClick}  style={styles.button}>
-                    <Text style={styles.buttonTitle}>Stop</Text>
-                </TouchableHighlight>
-            )         
-        }   
+        return(
+            // onPress={this.handleTimerButtonClick}
+            <TouchableHighlight onPress={this._onStartPress} style={styles.button}>
+                <Text style={styles.buttonTitle}>Start</Text>
+            </TouchableHighlight>
+        ) 
     }
 
     timerView = () => {
@@ -104,17 +55,17 @@ export default class TaskListItem extends Component{
 
     timeSpentView = () => {
         return(
-            <Text style={styles.time}>{getTimeSpentTotal(this.props.data.intervals)}</Text>
+            <Text style={[styles.time, fonts.main_medium]}>{getTimeSpentTotal(this.props.data.intervals)}</Text>
         )
     }
 
     render(){
         return(         
             <View style={styles.container}>
-                <TouchableWithoutFeedback onLongPress={this._onLongPress}>
+                <TouchableWithoutFeedback onPress={this._onPress}>
                     <View style={styles.containerRow}>
                         <View style={styles.containerColumn}>
-                            <Text style={styles.name}>{this.props.data.name}</Text>
+                            <Text style={[styles.name, fonts.main_large]}>{this.props.data.name}</Text>
                             {this.state.timerIsRunning ? this.timerView() : this.timeSpentView()}
                         </View>
                         {this.timerButton()}
@@ -158,13 +109,9 @@ const styles = StyleSheet.create({
     },
     name: {
         margin: 4,
-        fontSize: 24,
-        color: 'black',
     },
     time: {
         margin: 4,
-        fontSize: 16,
-        color: 'black',
     },
     button: {
         margin: 4,

@@ -23,6 +23,9 @@ class StatsScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  container: {
+
+  },
   tabIcon:{
 
   }
