@@ -11,6 +11,8 @@ import { today, thisWeek, thisMonth, thisYear, fullSet } from '../utils/test_dat
 import { getTimeSpentToday, getTimeSpentWeek, getTimeSpentMonth, getTimeSpentTotal, testFunction } from '../utils/misc'
 import { fonts } from '../utils/styles/font_styles'
 import Timer from './TimerComponent'
+import Goals from './GoalsComponent'
+import ModalDialog from '../components/ModalDialog'
 
 // XXh:XXm
 _convertInterval = () => {
@@ -21,16 +23,21 @@ class TaskStats extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
     return {
-      //title: navigation.getParam('taskTitle', 'TaskDetails'),
       headerTitle: (
         <Text style={fonts.main_medium}>{navigation.getParam('taskTitle', 'TaskDetails')}</Text>
       ),
       headerRight: (
         <View style={{flexDirection: 'row'}}>
-          <TouchableOpacity style={styles.navBarButton}>
+
+          <TouchableOpacity
+            onPress={navigation.getParam('toggleRenameTaskDialog')} 
+            style={styles.navBarButton}>
             <Icon name="edit" size={30} color="black" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.navBarButton}>
+
+          <TouchableOpacity
+            onPress={navigation.getParam('toggleDeleteTaskDialog')} 
+            style={styles.navBarButton}>
             <Icon name="delete" size={30} color="black" />
           </TouchableOpacity>
         </View>   
@@ -41,6 +48,8 @@ class TaskStats extends React.Component {
   state = {
     timerStarted: false,
     data: null,
+    deleteTaskDialogVisible: false,
+    renameTaskDialogVisible: false,
   }
 
   componentWillMount(){
@@ -48,6 +57,27 @@ class TaskStats extends React.Component {
       timerStarted: this.props.navigation.getParam('startTimer', false),
       data: this.props.navigation.getParam('data', null)
     })
+  }
+
+  componentDidMount(){
+    this.props.navigation.setParams({toggleDeleteTaskDialog: this._toggleDeleteTaskDialog})
+    this.props.navigation.setParams({toggleRenameTaskDialog: this._toggleRenameTaskDialog})
+  }
+
+  _toggleDeleteTaskDialog = () => {
+    if(this.state.deleteTaskDialogVisible){
+      this.setState({deleteTaskDialogVisible: false})
+    }else{
+      this.setState({deleteTaskDialogVisible: true})
+    }
+  }
+
+  _toggleRenameTaskDialog = () => {
+    if(this.state.renameTaskDialogVisible){
+      this.setState({renameTaskDialogVisible: false})
+    }else{
+      this.setState({renameTaskDialogVisible: true})
+    }
   }
 
   _addTaskInterval = (interval) => {
@@ -76,6 +106,7 @@ class TaskStats extends React.Component {
 
       return (
         <View style={styles.container}>
+
           <View style={styles.chartContainer}>
             <AreaChart
               style={{ height: 150}}
@@ -113,6 +144,8 @@ class TaskStats extends React.Component {
                 <Text style={[styles.time, fonts.main_medium]}>{ getTimeSpentTotal(this.state.data.intervals)}</Text>
               </View>
             </View>
+
+            <Goals/>
             {/* <Text>task statistics</Text>
             <Text>{dateFns.format(today[0].date * 1000, 'DD:MM:YYYY')}</Text>
             <Text>{dateFns.format(thisWeek[0].date * 1000, 'DD:MM:YYYY')}</Text>

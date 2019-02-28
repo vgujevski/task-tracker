@@ -12,6 +12,7 @@ export default class ModalDialog extends Component{
     state = {
         modalVisible: false,
         nameInput: '',
+        mode: '', // edit, add, confirm
     }
 
     handleNameInput = (nameInput) => {
@@ -20,6 +21,10 @@ export default class ModalDialog extends Component{
 
     componentWillReceiveProps(nextProps){
         this.setState({modalVisible: nextProps.show});
+    }
+
+    componentDidMount(){
+        this.setState({mode: this.props.mode, nameInput: this.props.name})
     }
 
     dismissDialog = (hasNewData) => {
@@ -44,6 +49,53 @@ export default class ModalDialog extends Component{
         }       
     }
 
+    _onPositiveResponse = () => {
+
+    }
+
+    _onNegativeResponse = () => {
+        
+    }
+
+    _renderMode = () => {
+        switch (this.props.mode) {
+            case 'add':
+                return(
+                    <TextInput
+                        style={styles.taskNameInput}
+                        onChangeText={this.handleNameInput}
+                        value={this.state.nameInput}
+                        keyboardType='default'
+                        placeholder='enter name'
+                    />
+                )
+                break;
+            case 'edit':
+                return(
+                    <TextInput
+                        style={styles.taskNameInput}
+                        onChangeText={this.handleNameInput}
+                        value={this.state.nameInput}
+                        keyboardType='default'
+                    />
+                )   
+                break;
+            case 'confirm':
+                return(
+                    <View>
+                        <Text>This task will be deleted.</Text>
+                        <Text>Are you sure?</Text>
+                    </View>
+                )
+                break;
+            default:
+                return(
+                    <Text>default</Text>
+                )
+                break;
+        }
+    }
+
     render(){
         return(
             <Modal
@@ -56,13 +108,14 @@ export default class ModalDialog extends Component{
             >
                 <View style={styles.container}>
                     <View style={styles.fragment}>
-                        <TextInput
+                        {this._renderMode()}
+                        {/* <TextInput
                             style={styles.taskNameInput}
                             onChangeText={this.handleNameInput}
                             value={this.state.nameInput}
                             keyboardType='default'
                             placeholder='enter name'
-                        />
+                        /> */}
                         <View style={styles.buttonContainer}>
                             <TouchableHighlight
                                 style={styles.button}

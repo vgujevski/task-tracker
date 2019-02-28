@@ -101,7 +101,10 @@ class TaskListScreen extends React.Component {
                 style={styles.buttonContainer}>
               <Icon name="add-box" size={40} color="black" />
           </TouchableHighlight>
-          <ModalDialog show={this.state.modalVisible} toggle={this.toggleModal}/>
+          <ModalDialog 
+            show={this.state.modalVisible} 
+            toggle={this.toggleModal}
+            mode={'add'}/>
         </View>
       );
     }
