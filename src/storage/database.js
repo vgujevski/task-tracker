@@ -45,8 +45,6 @@ const addTask = (name) => {
 
 const findTaskById = (id) => {
     return new Promise((resolve, reject) => {
-        const uuid = uuidv4();
-        const intervals = [];
         Realm.open({schema: [TaskSchema, IntervalSchema], schemaVersion})
         .then(realm => {
             // get task
@@ -90,10 +88,12 @@ const deleteTaskWithId = (id) => {
             // check for empty object
             if(task[0]){
                 try{
-                    realm.delete(task[0]);
-                    resolve('task deleted');
+                    realm.write(() => {
+                        realm.delete(task[0]);
+                        resolve('task deleted');
+                    })
                 }catch(e){
-                    reject(e);
+                    reject(e)
                 }
             }else{
                 reject('task not found/')
@@ -149,6 +149,32 @@ const addTaskInterval = (id, interval) => {
     })
 }
 
+const editTaskName = (id, name) => {
+    return new Promise((resolve, reject) => {
+        Realm.open({schema: [TaskSchema, IntervalSchema], schemaVersion})
+        .then(realm => {
+            // get task
+            let tasks = realm.objects('Task');
+            let task = tasks.filtered(`id = "${id}"`);
+            if(task[0]){
+                try{
+                    realm.write(() => {
+                        task[0].name = name
+                        resolve(`task name updated`)
+                    })
+                }catch(e){
+                    reject(e)
+                }
+            }else{
+                reject('task not found')
+            }
+            
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
 export {
     addTask,
     addTaskInterval,
@@ -156,5 +182,6 @@ export {
     getTaskList,
     deleteTaskWithId,
     deleteAllTasks,
+    editTaskName,
 }
 

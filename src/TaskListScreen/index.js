@@ -3,27 +3,9 @@ import { Text, View, FlatList, StyleSheet, TouchableHighlight, TouchableWithoutF
 import TaskListItem from './TaskListItem.js';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
-import { getTaskList } from '../storage/database';
+import { getTaskList, addTask } from '../storage/database';
 
 import ModalDialog from '../components/ModalDialog'
-
-const testData = [
-    {
-        id: '001',
-        name: 'gym',
-        intervals: [555666888, 111333777, 777111222, 444222000],
-    },
-    {
-        id: '002',
-        name: 'reading',
-        intervals: [777666999, 111333777, 777111222, 444222000],
-    },
-    {
-        id: '003',
-        name: 'cooking',
-        intervals: [555111888, 111333111, 777111222, 111222000],
-    }
-]
 
 class TaskListScreen extends React.Component {
 
@@ -39,11 +21,16 @@ class TaskListScreen extends React.Component {
 
     state = {
         data: [],
-        modalVisible: false
+        modalVisible: false,
+        modalDialogMode: '',
     }
 
     componentWillMount(){
        this.refreshData(); 
+    }
+
+    componentWillReceiveProps(){
+        this.refreshData();
     }
 
     handleAddTaskClick = () => {
@@ -88,6 +75,24 @@ class TaskListScreen extends React.Component {
         })
     }
 
+    _addTaskDialogPositive = (name) => {
+        // check string length, display error msg if needed.
+
+        addTask(name).then(response => {
+            console.log(response);                     
+            this.toggleModal(true)
+        }).catch(error => {   
+            console.log(error);
+            this.toggleModal()       
+        })     
+    }
+
+    _addTaskDialogNegative = () => {
+        this.toggleModal()
+    }
+
+
+
     render() {
       return (
         <View style={styles.container}>          
@@ -104,7 +109,10 @@ class TaskListScreen extends React.Component {
           <ModalDialog 
             show={this.state.modalVisible} 
             toggle={this.toggleModal}
-            mode={'add'}/>
+            mode={'add'}
+            positive={this._addTaskDialogPositive}
+            negative={this._addTaskDialogNegative}
+            />
         </View>
       );
     }

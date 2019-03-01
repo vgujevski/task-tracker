@@ -1,11 +1,8 @@
 import React, {Component} from 'react';
 import {
-        Modal, View, Text, 
-        Alert, StyleSheet, 
-        Button, TextInput, TouchableHighlight } from 'react-native';
+        Modal, View, Text, StyleSheet, 
+        TextInput, TouchableHighlight } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons'
-
-import { addTask } from '../storage/database'
 
 export default class ModalDialog extends Component{
     
@@ -20,7 +17,7 @@ export default class ModalDialog extends Component{
     }
 
     componentWillReceiveProps(nextProps){
-        this.setState({modalVisible: nextProps.show});
+        this.setState({modalVisible: nextProps.show, mode: nextProps.mode});
     }
 
     componentDidMount(){
@@ -30,31 +27,6 @@ export default class ModalDialog extends Component{
     dismissDialog = (hasNewData) => {
         this.setState({modalVisible: this.state.modalVisible ? false : true, nameInput: ''})
         this.props.toggle(hasNewData)
-    }
-
-    addTask = () => {
-        // Add Task
-        if(this.state.nameInput !== ''){
-            addTask(this.state.nameInput).then(response => {
-                console.log(`task added id: ${response}`);
-                this.dismissDialog(true)       
-            }).catch(error => {
-                console.log(error);
-                this.dismissDialog(false)
-                alert('error')     
-            })
-        }else{
-            alert('name too short') 
-            // display error msg 'name is too short'
-        }       
-    }
-
-    _onPositiveResponse = () => {
-
-    }
-
-    _onNegativeResponse = () => {
-        
     }
 
     _renderMode = () => {
@@ -96,6 +68,24 @@ export default class ModalDialog extends Component{
         }
     }
 
+    _positiveResponse = () => {
+        switch (this.props.mode) {
+            case 'add':
+                this.props.positive(this.state.nameInput)
+                break;
+            case 'confirm':
+                this.props.positive()
+                break;
+            case 'edit':
+                this.props.positive(this.state.nameInput)
+                break;
+        }
+    }
+
+    _negativeResponse = () => {
+        this.props.negative()
+    }
+
     render(){
         return(
             <Modal
@@ -109,22 +99,15 @@ export default class ModalDialog extends Component{
                 <View style={styles.container}>
                     <View style={styles.fragment}>
                         {this._renderMode()}
-                        {/* <TextInput
-                            style={styles.taskNameInput}
-                            onChangeText={this.handleNameInput}
-                            value={this.state.nameInput}
-                            keyboardType='default'
-                            placeholder='enter name'
-                        /> */}
                         <View style={styles.buttonContainer}>
                             <TouchableHighlight
                                 style={styles.button}
-                                onPress={this.dismissDialog}>
+                                onPress={this._negativeResponse}>
                                 <Icon name="clear" size={40} color="black" />
                             </TouchableHighlight>
                             <TouchableHighlight
                                 style={styles.button}
-                                onPress={this.addTask}>
+                                onPress={this._positiveResponse}>
                                 <Icon name="done" size={40} color="black" />
                             </TouchableHighlight>
                         </View>

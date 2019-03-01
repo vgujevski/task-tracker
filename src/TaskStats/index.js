@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import dateFns from 'date-fns'
 import * as shape from 'd3-shape'
 
-import { addTaskInterval, findTaskById } from '../storage/database'
+import { addTaskInterval, findTaskById, editTaskName, deleteTaskWithId } from '../storage/database'
 import { today, thisWeek, thisMonth, thisYear, fullSet } from '../utils/test_dataset'
 import { getTimeSpentToday, getTimeSpentWeek, getTimeSpentMonth, getTimeSpentTotal, testFunction } from '../utils/misc'
 import { fonts } from '../utils/styles/font_styles'
@@ -48,8 +48,8 @@ class TaskStats extends React.Component {
   state = {
     timerStarted: false,
     data: null,
-    deleteTaskDialogVisible: false,
-    renameTaskDialogVisible: false,
+    modalDialogVisible: false,
+    modalDialogMode: '',
   }
 
   componentWillMount(){
@@ -65,18 +65,24 @@ class TaskStats extends React.Component {
   }
 
   _toggleDeleteTaskDialog = () => {
-    if(this.state.deleteTaskDialogVisible){
-      this.setState({deleteTaskDialogVisible: false})
-    }else{
-      this.setState({deleteTaskDialogVisible: true})
-    }
+    this.setState({modalDialogMode: 'confirm'})
+    this._toggleDialog()
   }
 
   _toggleRenameTaskDialog = () => {
-    if(this.state.renameTaskDialogVisible){
-      this.setState({renameTaskDialogVisible: false})
+    this.setState({modalDialogMode: 'edit'})
+    this._toggleDialog()
+  }
+
+  _toggleDialog = () => {
+    if(this.state.modalDialogVisible){
+      this.setState({
+        modalDialogVisible: false
+      })
     }else{
-      this.setState({renameTaskDialogVisible: true})
+      this.setState({
+        modalDialogVisible: true
+      })
     }
   }
 
@@ -93,10 +99,39 @@ class TaskStats extends React.Component {
       this.setState({
         data: response
       })
+      this.props.navigation.setParams({taskTitle: response.name})
     }).catch(error => {
       console.log(error);
       //alert('error')
     })
+  }
+
+  _onDialogNegative = () => {
+    // hide dialog
+    this._toggleDialog()
+  }
+
+  _onDialogPositive = (newName) => {
+    //this._toggleDialog()
+    switch (this.state.modalDialogMode) {
+      case 'confirm':
+        deleteTaskWithId(this.state.data.id).then(response => {
+          alert(response)
+          this.props.navigation.navigate('Tasks', {newData: true})
+        }).catch(error => {
+          alert(error)        
+        })        
+        break;
+      case 'edit':
+        editTaskName(this.state.data.id, newName).then(response => {
+          this._updateData()
+          console.log(response);
+        }).catch(error => {
+          alert(error)  
+        })
+        break;
+    }
+    
   }
 
   //TODO stop timer on backPressed
@@ -107,10 +142,16 @@ class TaskStats extends React.Component {
       return (
         <View style={styles.container}>
 
+          <ModalDialog
+            mode={this.state.modalDialogMode}
+            show={this.state.modalDialogVisible}
+            positive={this._onDialogPositive}
+            negative={this._onDialogNegative}/>
+
           <View style={styles.chartContainer}>
             <AreaChart
               style={{ height: 150}}
-              data={  fullSet  } //this.state.data.intervals
+              data={ fullSet } //this.state.data.intervals
               yAccessor={({item}) => item.interval}
               svg={{ fill }}
               curve = { shape.curveNatural }
