@@ -19,6 +19,7 @@ _convertInterval = () => {
   return ""
 }
 
+
 class TaskStats extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
@@ -214,7 +215,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#E5E5E5',
     marginLeft: 0,
     marginRight: 0,
-    
   },
   statsColumnContainer: {
     flexDirection:'column',

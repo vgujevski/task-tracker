@@ -314,3 +314,155 @@ export const fullSet = [{
     date: 1547174151000,
     interval: 1656100
   }]
+
+export const allTasksTest = [
+  {
+    id: 1,
+    name: 'coding',
+    intervals: [{
+      id: 11,
+      date: 1550094364000,
+      interval: 1435879
+    }, {
+      id: 22,
+      date: 1550164936000,
+      interval: 2681900
+    }, {
+      id: 33,
+      date: 1550050698000,
+      interval: 2159344
+    }, {
+      id: 44,
+      date: 1550151202000,
+      interval: 4898356
+    }, {
+      id: 55,
+      date: 1549957161000,
+      interval: 2037793
+    }, {
+      id: 13,
+      date: 1550094364000,
+      interval: 1435879
+    },{
+      id: 14,
+      date: 1550094364000,
+      interval: 1435879
+    },{
+      id: 15,
+      date: 1550094364000,
+      interval: 1435879
+    },{
+      id: 17,
+      date: 1550094364000,
+      interval: 1435879
+    },]
+  },
+  {
+    id: 2,
+    name: 'reading',
+    intervals: [{
+      id: 11,
+      date: 1550094364000,
+      interval: 1435879
+    }, {
+      id: 22,
+      date: 1550164936000,
+      interval: 2681900
+    }, {
+      id: 33,
+      date: 1550050698000,
+      interval: 2159344
+    }, {
+      id: 44,
+      date: 1550151202000,
+      interval: 4898356
+    }, {
+      id: 55,
+      date: 1549957161000,
+      interval: 2037793
+    }, {
+      id: 34,
+      date: 1550050698000,
+      interval: 2159344
+    }, {
+      id: 35,
+      date: 1550050698000,
+      interval: 2159344
+    }]
+  },
+  {
+    id: 3,
+    name: 'jogging',
+    intervals: [{
+      id: 22,
+      date: 1550164936000,
+      interval: 2681900
+    }, {
+      id: 33,
+      date: 1550050698000,
+      interval: 2159344
+    }, {
+      id: 44,
+      date: 1550151202000,
+      interval: 4898356
+    }, {
+      id: 55,
+      date: 1549957161000,
+      interval: 2037793
+    }]
+  },
+  {
+    id: 4,
+    name: 'learning spanish',
+    intervals:[{
+      id: 11,
+      date: 1550094364000,
+      interval: 1435879
+    }, {
+      id: 22,
+      date: 1550164936000,
+      interval: 2681900
+    }, {
+      id: 33,
+      date: 1550050698000,
+      interval: 2159344
+    }, {
+      id: 44,
+      date: 1550151202000,
+      interval: 4898356
+    }]
+  },
+  {
+    id: 5,
+    name: 'gym',
+    intervals:[{
+      id: 11,
+      date: 1550094364000,
+      interval: 1435879
+    }, {
+      id: 22,
+      date: 1550164936000,
+      interval: 2681900
+    }, {
+      id: 33,
+      date: 1550050698000,
+      interval: 2159344
+    }, {
+      id: 44,
+      date: 1550151202000,
+      interval: 4898356
+    }, {
+      id: 55,
+      date: 1549957161000,
+      interval: 2037793
+    },{
+      id: 56,
+      date: 1549957161000,
+      interval: 2037793
+    }, {
+      id: 57,
+      date: 1549957161000,
+      interval: 2037793
+    }]
+  }
+]

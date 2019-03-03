@@ -93,3 +93,21 @@ export const testFunction = (date) => {
 
     return `today: ${today}, week ${thisWeek}, month ${thisMonth}, year ${year}`
 }
+
+/**
+ * takes Task as parameter
+ * 
+ * return sum of all intervals
+ */
+export const getIntervalSum = (task) => {
+    let intervalArray = []
+    for(let i=0;i<task.intervals.length;i++){
+        intervalArray.push(task.intervals[i].interval)
+    }
+    return intervalArray.reduce(function(intervals, b) { return intervals + b; }, 0);
+}
+
+
+
+
+
