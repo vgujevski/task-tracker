@@ -110,7 +110,7 @@ const deleteTaskWithId = (id) => {
                     reject(e)
                 }
             }else{
-                reject('task not found/')
+                reject('task not found')
             }
         }).catch(error => {
             reject(error)
@@ -124,8 +124,10 @@ const deleteAllTasks = () => {
         .then(realm => {
             try{
                 let tasks = realm.objects('Task');
-                realm.delete(tasks);
-                resolve('all tasks deleted');
+                realm.write(() => {
+                    realm.delete(tasks);
+                    resolve('all tasks deleted');
+                })
             }catch(e){
                 reject(e);
             }
@@ -190,7 +192,31 @@ const editTaskName = (id, name) => {
 }
 
 const addGoal = (newGoal) => {
-    // TODO complete
+    return new Promise((resolve, reject) => {
+        const uuid = uuidv4()
+        const goal = {
+            id: uuid,
+            taskId: newGoal.taskId,
+            name: newGoal.name,
+            current: newGoal.current,
+            target: newGoal.target,
+            type: newGoal.type,
+            reminder: newGoal.reminder,
+        }
+        Realm.open({schema: [GoalSchema], schemaVersion})
+        .then(realm => {
+            try{
+                realm.write(() => {
+                    const goal = realm.create('Goal', goal)
+                    resolve(uuid)
+                })
+            }catch(e){
+                reject(e)
+            }
+        }).catch(error => {
+            reject(error)
+        })
+    })
 }
 
 const getTaskGoals = (taskId) => {
@@ -227,11 +253,69 @@ const getGoals = () => {
 }
 
 const editGoal = (id, newGoal) => {
-    // TODO complete
+    return new Promise((resolve, reject) => {
+        Realm.open({schema: [GoalSchema], schemaVersion})
+        .then(realm => {
+            const goals = realm.objects('Goal')
+            const goal = goals.filtered(`id = "${id}"`)
+            if(goal[0]){
+                try{
+                    realm.write(() => {
+                        goal[0] = newGoal
+                    })
+                }catch(e){
+                    reject(e)
+                }
+            }else{
+                reject('goal was not found')
+            }
+        }).catch(error => {
+            reject(error)
+        })
+    })
 }
 
 const deleteGoal = (id) => {
-    // TODO complete
+    return new Promise((resolve, reject) => {
+        Realm.open({schema: [GoalSchema], schemaVersion})
+        .then(realm => {
+            let goals = realm.objects('Goal')
+            let goal = goals.filtered(`id = "${id}"`)
+            if(goal[0]){
+                try{
+                    realm.write(() => {
+                        realm.delete(goal[0])
+                        resolve('goal deleted')
+                    })
+                }catch(e){
+                    reject(e)
+                }
+            }else{
+                reject('goal not found')
+            }
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
+const deleteAllGoals = () => {
+    return new Promise((resolve, reject) => {
+        Realm.open({schema: [GoalSchema], schemaVersion})
+        .then(realm => {
+            try{
+                let goals = realm.objects('Goal')
+                realm.write(() => {
+                    realm.delete(goals)
+                    resolve('all goals deleted')
+                })
+            }catch(e){
+
+            }
+        }).catch(error => {
+            reject(error)
+        })
+    })
 }
 
 export {
@@ -242,5 +326,11 @@ export {
     deleteTaskWithId,
     deleteAllTasks,
     editTaskName,
+    addGoal,
+    getTaskGoals,
+    getGoals,
+    editGoal,
+    deleteGoal,
+    deleteAllGoals,
 }
 
