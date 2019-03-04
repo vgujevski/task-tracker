@@ -5,6 +5,7 @@ import { PieChart } from 'react-native-svg-charts'
 
 import { allTasksTest } from '../utils/test_dataset'
 import { getIntervalSum } from '../utils/misc'
+import { getTaskList } from '../storage/database'
 const colors = [ 
   'rgb(255, 102, 102)',
   'rgb(255, 178, 102)',
@@ -61,18 +62,31 @@ class StatsScreen extends React.Component {
   state = {
     chart_size: 5, // top 3 or top 5,
     data: allTasksTest,
-    //data: [50, 10, 40, 95, -4, -24, 85, 91, 35, 53, -53, 24, 50],
+  }
+
+  _updateData = (size) => {
+    getTaskList().then(response => {
+      this.setState({
+        data: response
+      })       
+    }).catch(error => {
+      console.log(error);    
+    })
   }
  
+  componentWillMount(){
+    this._updateData()
+  }
     render() {
       //const randomColor = () => ('#' + (Math.random() * 0xFFFFFF << 0).toString(16) + '000000').slice(0, 7)
       
       const pieData = getChartTaskList(this.state.data, this.state.chart_size)
             .map((value, index) => ({
               value: value.timeSpent,
+              label: value.name,
               svg: {
                 fill: colors[index],
-                onPress: () => alert(`${value.name}, ${colors[index]}`)
+                onPress: () => alert(`${value.name}`)
               },
               key: `pie-${index}`,
             })) 
@@ -89,9 +103,6 @@ class StatsScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
   },
   chart_container: {
     marginTop: 10,
