@@ -23,6 +23,20 @@ const TaskSchema = {
     }
 }
 
+const GoalSchema = {
+    name: 'Goal',
+    primaryKey: 'id',
+    properties: {
+        id: 'string',
+        taskId: 'string',
+        name: 'string',
+        current: 'int',
+        target: 'int',
+        type: 'string',
+        reminder: 'boolean',
+    }
+}
+
 const addTask = (name) => {
     return new Promise((resolve, reject) => {
         const uuid = uuidv4();
@@ -173,6 +187,51 @@ const editTaskName = (id, name) => {
             reject(error)
         })
     })
+}
+
+const addGoal = (newGoal) => {
+    // TODO complete
+}
+
+const getTaskGoals = (taskId) => {
+    return new Promise((resolve, reject) => {
+        Realm.open({schema: [GoalSchema], schemaVersion})
+            .then(realm => {
+                let allGoals = realm.objects('Goal')
+                let taskGoals = allGoals.filtered(`taskId = "${taskId}"`)
+                if(taskGoals[0]){
+                    resolve(taskGoals)
+                }else{
+                    reject('no goals found for this task')
+                }
+            }).catch(error => {
+                reject(error)
+            })
+    })
+}
+
+const getGoals = () => {
+    return new Promise((resolve, reject) => {
+        Realm.open({schema: [GoalSchema], schemaVersion})
+            .then(realm => {
+                let allGoals = realm.objects('Goal')
+                if(allGoals[0]){
+                    resolve(allGoals)
+                }else{
+                    reject('no goals found')
+                }
+            }).catch(error => {
+                reject(error)
+            })     
+    })
+}
+
+const editGoal = (id, newGoal) => {
+    // TODO complete
+}
+
+const deleteGoal = (id) => {
+    // TODO complete
 }
 
 export {

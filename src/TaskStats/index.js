@@ -11,7 +11,7 @@ import { today, thisWeek, thisMonth, thisYear, fullSet } from '../utils/test_dat
 import { getTimeSpentToday, getTimeSpentWeek, getTimeSpentMonth, getTimeSpentTotal, testFunction } from '../utils/misc'
 import { fonts } from '../utils/styles/font_styles'
 import Timer from './TimerComponent'
-import Goals from './GoalsComponent'
+import Goals from './GoalList'
 import ModalDialog from '../components/ModalDialog'
 
 // XXh:XXm
