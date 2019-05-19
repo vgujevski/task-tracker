@@ -1,4 +1,6 @@
 rootProject.name = 'TaskTracker'
+include ':react-native-push-notification'
+project(':react-native-push-notification').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-push-notification/android')
 include ':react-native-gesture-handler'
 project(':react-native-gesture-handler').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-gesture-handler/android')
 
@@ -10,6 +12,5 @@ project(':react-native-vector-icons').projectDir = new File(rootProject.projectD
 
 include ':react-native-svg'
 project(':react-native-svg').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-svg/android')
-
 
 include ':app'

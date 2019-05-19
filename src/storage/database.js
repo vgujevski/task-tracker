@@ -13,6 +13,19 @@ const IntervalSchema = {
     }
 }
 
+const GoalSchema = {
+    name: 'Goal',
+    primaryKey: 'id',
+    properties: {
+        id: 'string',
+        taskId: 'string',
+        progress: 'int',
+        target: 'int',
+        type: 'string', // daily/weekly/monthly
+        reminder: 'boolean',
+    }
+}
+
 const TaskSchema = {
     name: 'Task',
     primaryKey: 'id',
@@ -23,19 +36,8 @@ const TaskSchema = {
     }
 }
 
-const GoalSchema = {
-    name: 'Goal',
-    primaryKey: 'id',
-    properties: {
-        id: 'string',
-        taskId: 'string',
-        name: 'string',
-        current: 'int',
-        target: 'int',
-        type: 'string',
-        reminder: 'boolean',
-    }
-}
+
+// Tasks
 
 const addTask = (name) => {
     return new Promise((resolve, reject) => {
@@ -191,14 +193,15 @@ const editTaskName = (id, name) => {
     })
 }
 
+
+// Goals
 const addGoal = (newGoal) => {
     return new Promise((resolve, reject) => {
         const uuid = uuidv4()
         const goal = {
             id: uuid,
             taskId: newGoal.taskId,
-            name: newGoal.name,
-            current: newGoal.current,
+            progress: 0,
             target: newGoal.target,
             type: newGoal.type,
             reminder: newGoal.reminder,
@@ -207,7 +210,7 @@ const addGoal = (newGoal) => {
         .then(realm => {
             try{
                 realm.write(() => {
-                    const goal = realm.create('Goal', goal)
+                    const addedGoal = realm.create('Goal', goal)
                     resolve(uuid)
                 })
             }catch(e){
@@ -317,6 +320,8 @@ const deleteAllGoals = () => {
         })
     })
 }
+
+
 
 export {
     addTask,

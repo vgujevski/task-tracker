@@ -1,21 +1,73 @@
 import React, {Component} from 'react';
-import { View, Text, StyleSheet, TouchableHighlight, Dimensions, TouchableWithoutFeedback} from 'react-native';
+import { AppState, View, Text, StyleSheet, TouchableHighlight, Dimensions, TouchableWithoutFeedback} from 'react-native';
 import moment from 'moment';
+import PushNotification from 'react-native-push-notification'
 const timer = require('react-native-timer')
 
 import {fonts} from '../utils/styles/font_styles'
+import PushController from './PushController'
 
 export default class TimerComponent extends Component {
 
     state = {
         timerNow: 0,
         timerStart: 0,
+        appState: AppState.currentState,
+        shouldSaveInterval: false, 
+
     }
 
     componentDidMount(){
         if(this.props.timerStarted){
             this._startTimer()
         }
+
+        //Notification
+        AppState.addEventListener('change', this.handleAppStateChange)
+    }
+
+    componentWillReceiveProps(newProps){
+        // if shouldSaveInterval == true and timerNow != 0, call this._stopTimer
+        if(newProps.backPressed){
+            console.log('Timer: new props, backPressed == true');
+            if(!this.state.timerNow == 0){
+                // stop timer
+                this._stopTimer()
+            }
+        }
+    }
+
+    componentWillUnmount(){
+        AppState.removeEventListener('change', this.handleAppStateChange)
+    }
+
+    handleAppStateChange = (appState) =>{
+        if(appState === 'background'){
+            console.log('app is in background');
+            
+            // if timer is running display notification
+            if(this.state.timerNow !== 0){
+                this._showNotification();
+            }
+            if(!this.state.timerNow == 0){
+                console.log('timer is running');               
+            }else{
+                console.log('timer not running');
+            }
+            // remove notification if app brought to foreground  
+        }else if(appState === 'active'){
+            console.log('app is in foreground');
+            PushNotification.cancelAllLocalNotifications()
+        }
+    }
+
+    _showNotification = () => {
+        PushNotification.localNotification({
+            id: '1',
+            message: `Task name: ${this.state.timerNow}`, // required
+            ongoing: true, 
+            //date: new Date(Date.now() + (1 * 1000)), // in 1 second
+        })
     }
 
     _onClick = () => {
@@ -85,6 +137,7 @@ export default class TimerComponent extends Component {
                 <TouchableHighlight onPress={this._onClick}>
                     {this._renderTimer()}
                 </TouchableHighlight>
+                <PushController/>
             </View>
 
         )
@@ -96,8 +149,8 @@ const styles = StyleSheet.create({
         marginTop: 0,
         backgroundColor: '#E5E5E5',
         height: '15%',
-        alignContent: 'center',
-        justifyContent: 'center',
+        //alignContent: 'center',
+        //justifyContent: 'center',
     },
     timerContainer: {
         flexDirection: 'row',

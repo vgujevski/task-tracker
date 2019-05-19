@@ -6,6 +6,7 @@ const timer = require('react-native-timer')
 import { addTaskInterval } from '../storage/database'
 import { getTimeSpentTotal } from '../utils/misc'
 import { fonts } from '../utils/styles/font_styles'
+import { colorts, colors } from '../utils/styles/colors'
 
 var width = Dimensions.get('window').width;
 
@@ -78,14 +79,14 @@ export default class TaskListItem extends Component{
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#BDBDBD',
+        backgroundColor: colors.secondaryLight,
         marginTop: 4,
         width: width - 6,
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 8,
-        borderWidth: 1,
+        //borderRadius: 8,
+        //borderWidth: 1,
         overflow: 'hidden',
     },
     containerColumn: {
@@ -93,19 +94,15 @@ const styles = StyleSheet.create({
         flex: 3,
         flexDirection: 'column',
         width:'80%',
-        backgroundColor: '#CFD8DC',
         justifyContent: 'center',
         alignItems: 'flex-start',
     },
     containerRow: {
         flex: 1,
         flexDirection: 'row',
-        backgroundColor: '#CFD8DC',
         width:'100%' - 5,
         justifyContent: 'center',
         alignItems: 'center',
-        
-        
     },
     name: {
         margin: 4,
@@ -120,9 +117,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width:'40%',
         height: '90%',
-        backgroundColor: '#8BC34A',
-        borderRadius: 8,
-        borderWidth: 1,
+        backgroundColor: colors.secondaryDark,
+        borderRadius: 4,
         overflow: 'hidden',
         
     },

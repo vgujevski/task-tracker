@@ -4,6 +4,7 @@ import TaskListItem from './TaskListItem.js';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
 import { getTaskList, addTask } from '../storage/database';
+import { colors } from '../utils/styles/colors'
 
 import ModalDialog from '../components/ModalDialog'
 
@@ -25,8 +26,8 @@ class TaskListScreen extends React.Component {
         modalDialogMode: '',
     }
 
-    componentWillMount(){
-       this.refreshData(); 
+    componentDidMount(){
+        this.refreshData();
     }
 
     componentWillReceiveProps(){
@@ -120,16 +121,15 @@ class TaskListScreen extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
+        padding: 4,
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        //backgroundColor: '#607D8B',
-        backgroundColor: '#757575',
+        backgroundColor: colors.mainLight,
     },
     buttonContainer: {
         height: '10%',
         width: '100%',
-        //backgroundColor: '#607D8B',
         justifyContent: 'center',
         alignItems: 'center',
     },

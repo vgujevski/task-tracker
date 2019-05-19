@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native'
 
 export const fonts = StyleSheet.create({
+    // timer
     main_xlarge: {
         fontSize: 48,
         letterSpacing: 1,

@@ -5,6 +5,7 @@ import { AreaChart, XAxis } from 'react-native-svg-charts'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import dateFns from 'date-fns'
 import * as shape from 'd3-shape'
+import { HeaderBackButton } from 'react-navigation'
 
 import { addTaskInterval, findTaskById, editTaskName, deleteTaskWithId } from '../storage/database'
 import { today, thisWeek, thisMonth, thisYear, fullSet } from '../utils/test_dataset'
@@ -19,13 +20,23 @@ _convertInterval = () => {
   return ""
 }
 
-
 class TaskStats extends React.Component {
+
+  constructor(props){
+    super(props);
+  }
 
   static navigationOptions = ({ navigation }) => {
     return {
       headerTitle: (
         <Text style={fonts.main_medium}>{navigation.getParam('taskTitle', 'TaskDetails')}</Text>
+      ),
+      headerLeft: (
+        <HeaderBackButton onPress={
+          // addTaskInterval if timer is running
+          // navigate to previous screen
+          navigation.getParam('handleBackButton') 
+        }/>
       ),
       headerRight: (
         <View style={{flexDirection: 'row'}}>
@@ -51,6 +62,8 @@ class TaskStats extends React.Component {
     data: null,
     modalDialogVisible: false,
     modalDialogMode: '',
+    backPressed: false, // passed to Timer as prop
+
   }
 
   componentWillMount(){
@@ -63,6 +76,7 @@ class TaskStats extends React.Component {
   componentDidMount(){
     this.props.navigation.setParams({toggleDeleteTaskDialog: this._toggleDeleteTaskDialog})
     this.props.navigation.setParams({toggleRenameTaskDialog: this._toggleRenameTaskDialog})
+    this.props.navigation.setParams({handleBackButton: this._handleBackButton})
   }
 
   _toggleDeleteTaskDialog = () => {
@@ -93,6 +107,20 @@ class TaskStats extends React.Component {
     }).catch(e => {
       console.log(e); 
     })
+  }
+
+  _handleBackButton = () => {
+    // alert('back pressed')
+    // pass new props to Timer component
+    
+    this.setState({
+      backPressed: true
+    }, () => {
+      // navigate back to previous screen
+      this.props.navigation.navigate('Tab')
+    })
+
+
   }
 
   _updateData = () => {
@@ -151,12 +179,12 @@ class TaskStats extends React.Component {
 
           <View style={styles.chartContainer}>
             <AreaChart
-              style={{ height: 150}}
+              style={{ height: 100}}
               data={ fullSet } //this.state.data.intervals
               yAccessor={({item}) => item.interval}
               svg={{ fill }}
               curve = { shape.curveNatural }
-              contentInset={{ top: 30, bottom: 0 }}
+              contentInset={{ top: 10, bottom: 0 }}
             >
                 {/* <Grid/> */}
             </AreaChart>
@@ -165,6 +193,7 @@ class TaskStats extends React.Component {
           <Timer 
             timerStarted={this.state.timerStarted}
             addInterval={this._addTaskInterval}
+            backPressed={this.state.backPressed}
             />
 
           <View style={styles.statsContainer}>
@@ -203,15 +232,15 @@ class TaskStats extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignContent: 'center',
+    alignContent: 'flex-start',
     flexDirection: 'column',
   },
   chartContainer: {
-    height: 150, 
+    height: 100, 
     paddingTop: 0,  
   },
   statsContainer: {
-    marginTop:10,
+    marginTop:0,
     backgroundColor: '#E5E5E5',
     marginLeft: 0,
     marginRight: 0,
@@ -237,20 +266,3 @@ const styles = StyleSheet.create({
 })
 
 export default TaskStats
-            {/* <XAxis
-              data={ dummyData }
-              svg={{
-                fill: 'black',
-                fontSize: 8,
-                fontWeight: 'bold',
-                rotation: 20,
-                originY: 30,
-                y: 5,
-              }}
-              xAccessor={ ({ item }) => item.date}
-              xScale= { scale.scaleTime }
-              numberOfTicks={6}
-              style={{ marginHorizontal: -15, height: 20 }}
-              contentInset={{ left: 10, right: 25 }}
-              formatLabel={ (value) => dateFns.format(value, 'HH:mm') }
-            /> */}

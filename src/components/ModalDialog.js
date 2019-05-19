@@ -9,7 +9,7 @@ export default class ModalDialog extends Component{
     state = {
         modalVisible: false,
         nameInput: '',
-        mode: '', // edit, add, confirm
+        mode: '', // edit, add, confirm, addGoal
     }
 
     handleNameInput = (nameInput) => {
@@ -60,6 +60,12 @@ export default class ModalDialog extends Component{
                     </View>
                 )
                 break;
+            case 'addGoal':
+                return(
+                    <View>
+                        <Text>adding new goal</Text>
+                    </View>
+                )
             default:
                 return(
                     <Text>default</Text>

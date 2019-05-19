@@ -1,7 +1,30 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, Text, FlatList } from 'react-native'
+import { View, StyleSheet, Text, FlatList, TouchableHighlight} from 'react-native'
 
-import Goal from './Goal'
+import Goal from './GoalListItem'
+
+import { fonts } from '../utils/styles/font_styles'
+
+const testGoals = [
+    {
+        id: 1,
+        taskId: 11,
+        name: 'name',
+        current: 424144,
+        target: 2332177,
+        type: 'week', // day/week/month
+        reminder: false, // notifications
+    },
+    // {
+    //     id: 2,
+    //     taskId: 8,
+    //     name: 'name',
+    //     current: 424144,
+    //     target: 2332177,
+    //     type: 'week', // day/week/month
+    //     reminder: false, // notifications
+    // }
+]
 /**
  *  @TODO doc
  *  @FlatList
@@ -13,10 +36,45 @@ import Goal from './Goal'
  */
 export default class GoalList extends Component{
 
+    state = {
+        data: []
+    }
+
+    _keyExtractor = (item, index) => item.id;
+
+    _renderItem = ({item}) => (
+        <Goal
+            data={item}
+            clickListener={this._onPressItem}/>
+    )
+
+    _handleAddGoalClick = () => {
+        alert('add goal')
+    }
+
+    _renderAddGoalButton = () => (
+            <TouchableHighlight onPress={this._handleAddGoalClick}>
+                <View style={styles.newGoalButtonContainer}>
+                    <Text style={[{textAlign: 'center'}, fonts.main_medium]}>Set new goal</Text>
+                </View>             
+            </TouchableHighlight> 
+    )
+
+    _onPressItem = () => {
+        alert('click')
+    }
+
     render(){
         return(
             <View style={styles.container}>
-                <Text style={{textAlign: 'center'}}>goals</Text>
+                {/* <FlatList
+                    data={this.state.data}
+                    keyExtractor={this._keyExtractor}
+                    renderItem={this._renderItem}
+                /> */}
+                {this._renderAddGoalButton()}
+                <Goal/>
+                <Goal/>
             </View>
         )
     }
@@ -24,6 +82,12 @@ export default class GoalList extends Component{
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 10,
-    }
+        marginTop: 15,
+    },
+    newGoalButtonContainer: {
+        margin: 10,
+        flex: 1,
+        alignContent: 'flex-start',
+        justifyContent: 'center',
+    },
 })
