@@ -1,26 +1,46 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, Text, } from 'react-native'
+import { View, StyleSheet, Text, TouchableHighlight, TouchableOpacity} from 'react-native'
 
 import { fonts } from '../utils/styles/font_styles'
-
-
+import { colors } from '../utils/styles/colors'
+import { formatProgressPercentage} from '../utils/misc'
 
 export default class Goal extends Component{
 
+    _handleLongPress = () => {
+        this.props.onLongPress(this.props.data.id)
+    }
     render(){
         return(
-            <View style={styles.container}>
-                <Text style={[{textAlign: 'center'}, fonts.main_medium]}>current goal</Text>
-            </View>
+            <TouchableOpacity onLongPress={this._handleLongPress}>
+                <View style={styles.container}>
+                    <View style={styles.row}>
+                        <Text style={[styles.type,fonts.main_medium]}>{this.props.data.type}</Text>
+                        <Text style={[styles.progress, fonts.main_medium]}>{formatProgressPercentage(this.props.data.progress, this.props.data.target)}</Text>
+                    </View>
+                </View>
+            </TouchableOpacity>   
         )
     }
 }
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 10,
+        margin: 10,
+        padding: 10,
+        alignContent: 'flex-start',
         justifyContent: 'center',
-        //flex: 1,
-        //alignContent: 'flex-start',
-    }
+        backgroundColor: colors.mainLight,
+    },
+    row: {
+        flexDirection:'row'
+    },
+    type: {
+        textAlign: 'center',
+        flex:1,
+    },
+    progress: {
+        textAlign: 'center',
+        flex:1,
+    },
 })

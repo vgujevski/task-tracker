@@ -85,12 +85,11 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        //borderRadius: 8,
-        //borderWidth: 1,
         overflow: 'hidden',
     },
     containerColumn: {
         margin: 4,
+        paddingLeft: 20,
         flex: 3,
         flexDirection: 'column',
         width:'80%',
@@ -105,10 +104,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     name: {
-        margin: 4,
+        //margin: 4,
+        paddingLeft: 10,
     },
     time: {
-        margin: 4,
+        //margin: 4,
     },
     button: {
         margin: 4,
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
         width:'40%',
         height: '90%',
         backgroundColor: colors.secondaryDark,
-        borderRadius: 4,
+        borderRadius: 3,
         overflow: 'hidden',
         
     },

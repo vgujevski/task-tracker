@@ -3,25 +3,58 @@ import {
         Modal, View, Text, StyleSheet, 
         TextInput, TouchableHighlight } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button'
+import { colors } from '../utils/styles/colors';
+
+const radio_props = [
+    {label: 'Daily', value: 'daily'},
+    {label: 'Weekly', value: 'weekly'},
+    {label: 'Monthly', value: 'monthly'},
+]
 
 export default class ModalDialog extends Component{
     
     state = {
         modalVisible: false,
         nameInput: '',
-        mode: '', // edit, add, confirm, addGoal
+        mode: '', // edit, add, confirm, addGoal, confirmDeleteGoal
+        message: '',
+        newGoalType: '', //this.radioButtons[0].value,
+        radioButtons: [],
+        newGoalTarget: 0,
     }
 
     handleNameInput = (nameInput) => {
         this.setState({nameInput})
     }
 
+    handleGoalInput = (goalInput) => {
+        this.setState({newGoalTarget: goalInput})
+    }
+
     componentWillReceiveProps(nextProps){
-        this.setState({modalVisible: nextProps.show, mode: nextProps.mode});
+
+        this.setState(
+            {modalVisible: nextProps.show, 
+            mode: nextProps.mode, 
+            radioButtons: this._createRadioButtonList(),
+        }, () => {
+            if(this.state.radioButtons[0]){
+                if(this.state.radioButtons[0].value){
+                    this.setState({newGoalType: this.state.radioButtons[0].value})
+                } 
+            }     
+        });
     }
 
     componentDidMount(){
-        this.setState({mode: this.props.mode, nameInput: this.props.name})
+        //console.log(`ModalDialog componentDidMount called`);
+        
+        this.setState({
+            mode: this.props.mode, 
+            nameInput: this.props.name,
+            radioButtons: this._createRadioButtonList(),
+        })
     }
 
     dismissDialog = (hasNewData) => {
@@ -29,12 +62,29 @@ export default class ModalDialog extends Component{
         this.props.toggle(hasNewData)
     }
 
+    _createRadioButtonList = () => {
+        //console.log('createRadioButtonList called');
+        
+        var radioButtons = []
+        if(!this.props.daily){
+            radioButtons.push({label: 'Daily', value: 'daily'})
+        }
+        if(!this.props.weekly){
+            radioButtons.push({label: 'Weekly', value: 'weekly'})
+        }
+        if(!this.props.monthly){
+            radioButtons.push({label: 'Monthly', value: 'monthly'})
+        }      
+
+        return radioButtons
+    }
+
     _renderMode = () => {
         switch (this.props.mode) {
             case 'add':
                 return(
                     <TextInput
-                        style={styles.taskNameInput}
+                        style={styles.textInput}
                         onChangeText={this.handleNameInput}
                         value={this.state.nameInput}
                         keyboardType='default'
@@ -45,14 +95,14 @@ export default class ModalDialog extends Component{
             case 'edit':
                 return(
                     <TextInput
-                        style={styles.taskNameInput}
+                        style={styles.textInput}
                         onChangeText={this.handleNameInput}
                         value={this.state.nameInput}
                         keyboardType='default'
                     />
                 )   
                 break;
-            case 'confirm':
+            case 'confirmDeleteTask':
                 return(
                     <View>
                         <Text>This task will be deleted.</Text>
@@ -60,30 +110,63 @@ export default class ModalDialog extends Component{
                     </View>
                 )
                 break;
+            case 'confirmDeleteGoal':
+                return(
+                    <View>
+                        <Text>This goal will be deleted.</Text>
+                        <Text>Are you sure?</Text>
+                    </View>
+                )
             case 'addGoal':
                 return(
                     <View>
-                        <Text>adding new goal</Text>
+                        <RadioForm
+                            radio_props={this.state.radioButtons}
+                            initial={0}
+                            animation={false}
+                            onPress={(value) => {this.setState({newGoalType: value})}}
+                            buttonColor={colors.buttonsDark}
+                        />
+                        <TextInput
+                            style={styles.textInput}
+                            onChangeText={this.handleGoalInput}
+                            value={this.newGoalTarget}
+                            keyboardType='number-pad'
+                            placeholder='hours'
+                        />
                     </View>
                 )
             default:
                 return(
                     <Text>default</Text>
                 )
-                break;
+                //break;
         }
     }
 
     _positiveResponse = () => {
         switch (this.props.mode) {
             case 'add':
-                this.props.positive(this.state.nameInput)
+                this.props.positive({
+                    name: this.state.nameInput
+                })
                 break;
-            case 'confirm':
+            case 'confirmDeleteTask':
                 this.props.positive()
                 break;
             case 'edit':
-                this.props.positive(this.state.nameInput)
+                this.props.positive({
+                    newName: this.state.nameInput
+                })
+                break;
+            case 'addGoal':
+                this.props.positive({
+                    type: this.state.newGoalType,
+                    target: this.state.newGoalTarget,
+                })
+                break;
+            case 'confirmDeleteGoal':
+                this.props.positive()
                 break;
         }
     }
@@ -125,8 +208,8 @@ export default class ModalDialog extends Component{
 }
 
 const styles = StyleSheet.create({
-    taskNameInput: {
-        width: '50%',
+    textInput: {
+        width: '80%',
         fontSize: 16,
     },
     container: {
@@ -136,13 +219,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     fragment: {
-        width: '70%',
-        //backgroundColor: '#BDBDBD',
-        backgroundColor: '#66bb6a',
+        width: '60%',
+        backgroundColor: 'white',
         alignItems: 'center',
-        borderBottomWidth: 1,
-        borderRightWidth: 1,
-        borderWidth: 1,
+        padding: 10,
     },
     buttonContainer: {
         flexDirection: 'row',

@@ -76,10 +76,10 @@ class TaskListScreen extends React.Component {
         })
     }
 
-    _addTaskDialogPositive = (name) => {
+    _addTaskDialogPositive = (data) => {
         // check string length, display error msg if needed.
 
-        addTask(name).then(response => {
+        addTask(data.name).then(response => {
             console.log(response);                     
             this.toggleModal(true)
         }).catch(error => {   

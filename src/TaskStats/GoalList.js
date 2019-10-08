@@ -4,40 +4,71 @@ import { View, StyleSheet, Text, FlatList, TouchableHighlight} from 'react-nativ
 import Goal from './GoalListItem'
 
 import { fonts } from '../utils/styles/font_styles'
+import { colors } from '../utils/styles/colors'
 
 const testGoals = [
     {
-        id: 1,
+        id: 1111,
         taskId: 11,
         name: 'name',
-        current: 424144,
+        progress: 424144,
         target: 2332177,
-        type: 'week', // day/week/month
+        type: 'weekly', // day/week/month
         reminder: false, // notifications
     },
-    // {
-    //     id: 2,
-    //     taskId: 8,
-    //     name: 'name',
-    //     current: 424144,
-    //     target: 2332177,
-    //     type: 'week', // day/week/month
-    //     reminder: false, // notifications
-    // }
+    {
+        id: 2222,
+        taskId: 8,
+        name: 'name',
+        progress: 800000,
+        target: 2332177,
+        type: 'daily', // day/week/month
+        reminder: false, // notifications
+    }
 ]
 /**
  *  @TODO doc
  *  @FlatList
  *  shows 'set goal' button as top item in list
+ *  "set goal" button is only rendered if there is less than 3 goals active
  *  shows list of current goals
+ *  maximum of 3 goals can be active, 1 of each type
  *  @ListItem
  *  show goal info (name, amount(hh), progress)
  *  long press to open modal option menu (delete, rename)
+ *  
+ *  AddGoal bust MUST NOT be rendered if goal list already has all possible types (daily, weekly, monthly) 
  */
 export default class GoalList extends Component{
 
     state = {
-        data: []
+        data: [],
+        showAddButtom: true,
+    }
+
+    componentWillMount(){      
+        this.setState({data: this.props.data}, () => {
+            this._addButton(this.props)
+        })
+    }
+
+    componentWillReceiveProps(newProps){     
+        this.setState({data: newProps.data}, () => {
+            this._addButton(newProps)
+        })
+    }
+
+    _addButton = (props) => {
+        if(props.daily && props.weekly && props.monthly){
+
+            this.setState({
+                showAddButtom: false,
+            })        
+        }else{
+            this.setState({
+                showAddButtom: true,
+            })
+        }    
     }
 
     _keyExtractor = (item, index) => item.id;
@@ -45,36 +76,41 @@ export default class GoalList extends Component{
     _renderItem = ({item}) => (
         <Goal
             data={item}
+            onLongPress={this.props.toggleDeleteGoalDialog}
             clickListener={this._onPressItem}/>
     )
 
     _handleAddGoalClick = () => {
-        alert('add goal')
+        this.props.onPress()
     }
 
-    _renderAddGoalButton = () => (
-            <TouchableHighlight onPress={this._handleAddGoalClick}>
-                <View style={styles.newGoalButtonContainer}>
-                    <Text style={[{textAlign: 'center'}, fonts.main_medium]}>Set new goal</Text>
-                </View>             
-            </TouchableHighlight> 
-    )
+    _renderAddGoalButton = () => {
+        if(this.state.showAddButtom){
+            return (
+                <TouchableHighlight onPress={this._handleAddGoalClick}>
+                    <View style={styles.newGoalButtonContainer}>
+                        <Text style={[{textAlign: 'center'}, fonts.main_medium]}>Set new goal</Text>
+                    </View>             
+                </TouchableHighlight> 
+        )
+        }else{
+            return null
+        }
+    }
 
     _onPressItem = () => {
-        alert('click')
+        // alert('click')
     }
 
     render(){
         return(
             <View style={styles.container}>
-                {/* <FlatList
+                {this._renderAddGoalButton()}
+                <FlatList
                     data={this.state.data}
                     keyExtractor={this._keyExtractor}
                     renderItem={this._renderItem}
-                /> */}
-                {this._renderAddGoalButton()}
-                <Goal/>
-                <Goal/>
+                />
             </View>
         )
     }
@@ -82,12 +118,14 @@ export default class GoalList extends Component{
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 15,
+        marginTop: 10,
+        backgroundColor: colors.buttonsDark,
     },
     newGoalButtonContainer: {
         margin: 10,
-        flex: 1,
+        padding: 10,
         alignContent: 'flex-start',
         justifyContent: 'center',
+        backgroundColor: colors.mainLight,
     },
 })

@@ -5,6 +5,7 @@ import PushNotification from 'react-native-push-notification'
 const timer = require('react-native-timer')
 
 import {fonts} from '../utils/styles/font_styles'
+import { colors } from '../utils/styles/colors'
 import PushController from './PushController'
 
 export default class TimerComponent extends Component {
@@ -87,7 +88,7 @@ export default class TimerComponent extends Component {
             timerNow: now,
         })
         timer.setInterval(this, 'timer', () => {
-            console.log('interval called')
+            //console.log('interval called')
 
             this.setState({timerNow: new Date().getTime()})     
         }, 1000);
@@ -107,7 +108,7 @@ export default class TimerComponent extends Component {
         if(this.state.timerNow == 0){
             return(
                 // display start button
-                    <Text style = {[styles.button, fonts.main_xlarge]}>Start</Text>
+                    <Text style = {[styles.buttonText, fonts.main_xlarge]}>Start</Text>
             )
         }else{
             return(
@@ -146,17 +147,14 @@ export default class TimerComponent extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 0,
-        backgroundColor: '#E5E5E5',
+        backgroundColor: colors.buttonsDark,
         height: '15%',
-        //alignContent: 'center',
-        //justifyContent: 'center',
     },
     timerContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
     },
-    button: {
+    buttonText: {
         textAlign: 'center',
     }
 })

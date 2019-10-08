@@ -107,6 +107,15 @@ export const getIntervalSum = (task) => {
     return intervalArray.reduce(function(intervals, b) { return intervals + b; }, 0);
 }
 
+export const hoursToMills = (hours) => {
+    return hours * 1000 * 60 * 60
+}
+
+export const formatProgressPercentage = (progress, target) => {
+    const percentage = Math.floor((progress / target ) * 100)
+     return `${percentage}%`
+}
+
 
 
 
